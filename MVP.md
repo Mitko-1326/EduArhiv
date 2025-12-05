@@ -59,5 +59,5 @@
 - Едностраничен README файл с стъпки за внедряване (как да се изпълни локално с избрания стек).
 - Основен демонстрационен набор от данни (1 клас, 2 теми, примерни файлове + примерно тест).
 
-*Translated with [DeepL.com](https://www.deepl.com/?utm_campaign=product&utm_source=web_translator&utm_medium=web&utm_content=copy_free_translation) (free version)*
+
 
