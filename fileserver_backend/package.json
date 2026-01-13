@@ -1,0 +1,20 @@
+{
+  "name": "edurahiv_fileserv_api",
+  "version": "1.0.0",
+  "description": "FileServer API for the EduArhiv webplatform",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js",
+    "start": "node index.js"
+  },
+  "author": "Atanas Kozharov",
+  "license": "GPL-3.0",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}
