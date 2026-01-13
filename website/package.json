@@ -1,0 +1,29 @@
+{
+  "name": "eduarhiv_site",
+  "version": "1.0.0",
+  "description": "eduarhiv website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mitko-1326/EduArhiv.git"
+  },
+  "keywords": [
+    "website",
+    "fileshare",
+    "school",
+    "project"
+  ],
+  "author": "Nasko-5",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/Mitko-1326/EduArhiv/issues"
+  },
+  "homepage": "https://github.com/Mitko-1326/EduArhiv#readme",
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
+  }
+}
