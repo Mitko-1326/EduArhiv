@@ -9,6 +9,17 @@ app.use(express.urlencoded({ extended: true }));
 const API_URL = process.env.API_URL || 'http://localhost:3001';
 fetch(`${API_URL}/api/files`)
 
+const basicAuth = require('express-basic-auth');
+
+// Password protection (optional - only if BASIC_AUTH_PASSWORD is set)
+if (process.env.BASIC_AUTH_PASSWORD) {
+  app.use(basicAuth({
+    users: { 'demo': process.env.BASIC_AUTH_PASSWORD },
+    challenge: true,
+    realm: 'EduArhiv Demo'
+  }));
+}
+
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });

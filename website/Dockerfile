@@ -1,6 +1,3 @@
-# Use this Dockerfile in BOTH repos (EduArhiv and EduArhiv-fileserver)
-# Save as: Dockerfile (in root of each repo)
-
 FROM node:18-slim
 
 WORKDIR /app
