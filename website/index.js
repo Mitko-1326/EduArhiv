@@ -1,6 +1,15 @@
 const express = require("express");
 
+
 const app = express();
+// Password protection (optional - only if BASIC_AUTH_PASSWORD is set)
+if (process.env.BASIC_AUTH_PASSWORD) {
+  app.use(basicAuth({
+    users: { 'demo': process.env.BASIC_AUTH_PASSWORD },
+    challenge: true,
+    realm: 'EduArhiv Demo'
+  }));
+}
 const port = 3000;
 app.use(express.static("public"));
 app.use(express.json());
@@ -11,14 +20,6 @@ fetch(`${API_URL}/api/files`)
 
 const basicAuth = require('express-basic-auth');
 
-// Password protection (optional - only if BASIC_AUTH_PASSWORD is set)
-if (process.env.BASIC_AUTH_PASSWORD) {
-  app.use(basicAuth({
-    users: { 'demo': process.env.BASIC_AUTH_PASSWORD },
-    challenge: true,
-    realm: 'EduArhiv Demo'
-  }));
-}
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");

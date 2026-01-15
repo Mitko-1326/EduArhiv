@@ -26,9 +26,7 @@
   "dependencies": {
     "dotenv": "^17.2.3",
     "express": "^5.2.1",
-    "express-basic-auth": "^1.2.1",
-    "install": "^0.13.0",
-    "npm": "^11.7.0"
+    "express-basic-auth": "^1.2.1"
   },
   "devDependencies": {
     "nodemon": "^3.1.11"
