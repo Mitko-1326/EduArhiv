@@ -2,11 +2,23 @@ const express = require("express");
 require("dotenv").config();
 const basicAuth = require('express-basic-auth');  // ← Move to top
 const session = require('express-session');  // ← Move to top
+const cors = require("cors");
 
 const app = express();
 const port = 3000;
 const API_KEY = process.env.API_KEY;
 const API_URL = process.env.API_URL || 'http://api.eduarhiv.com';
+
+app.use(
+  cors({
+    origin:
+      process.env.NODE_ENV === "production"
+        ? ["https://eduarhiv.com", "https://www.eduarhiv.com"]
+        : true,
+    credentials: true,
+  })
+);
+
 
 // STEP 1: Set up body parsing FIRST
 app.use(express.json());

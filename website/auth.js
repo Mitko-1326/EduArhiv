@@ -5,7 +5,7 @@ module.exports = function(app, API_KEY) {
         // get form data
         const { username, password } = req.body;
         
-        // STEP 2: Call your API backend (with API key)
+        // Call your API backend (with API key)
         const apiResponse = await fetch('https://api.eduarhiv.com/auth/login', {
             method: 'POST',
             headers: {
@@ -17,7 +17,7 @@ module.exports = function(app, API_KEY) {
         
         const result = await apiResponse.json();
         
-        // STEP 3: If login successful, save to session
+        // If login successful, save to session
         if (result.success) {
             req.session.user = result.user;  // Store user info in session!
             req.session.isLoggedIn = true;
@@ -27,4 +27,6 @@ module.exports = function(app, API_KEY) {
             res.redirect('/login?error=invalid');  // Send back to login with error
         }
     });
+
+
 }
