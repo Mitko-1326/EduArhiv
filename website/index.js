@@ -59,6 +59,12 @@ app.get("/login", (req, res) => {
   res.sendFile(__dirname + "/public/login/login.html");
 });
 
+app.get("/dashboard", (req, res) => {
+  if (req.session.isLoggedIn) {
+    res.sendFile(__dirname + "/public/dashboard/dashboard.html");
+  }
+});
+
 // STEP 6: Start server
 app.listen(port, "0.0.0.0", () => {
   console.log(`Server is running on http://localhost:${port}`);

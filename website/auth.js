@@ -5,12 +5,11 @@ module.exports = function(app, API_KEY) {
         // get form data
         const { username, password } = req.body;
         
-        // Call your API backend (with API key)
-        const apiResponse = await fetch('https://api.eduarhiv.com/auth/login', {
+            const apiResponse = await fetch('https://api.eduarhiv.com/auth/login', {
             method: 'POST',
             headers: {
             'Content-Type': 'application/json',
-            'X-API-Key': API_KEY  // Your API key protection
+            'X-API-Key': API_KEY  
             },
             body: JSON.stringify({ username, password })
         });
@@ -19,8 +18,10 @@ module.exports = function(app, API_KEY) {
         
         // If login successful, save to session
         if (result.success) {
-            req.session.user = result.user;  // Store user info in session!
+            req.session.user = result.user;
+            console.log(result);  // Store user info in session!
             req.session.isLoggedIn = true;
+            console.log('User logged in:', req.session.user);
             
             res.redirect('/dashboard');  // Send them to main page
         } else {
@@ -28,5 +29,26 @@ module.exports = function(app, API_KEY) {
         }
     });
 
+    app.get("/current_user", (req, res) => {
+        if (req.session.isLoggedIn) {
+            res.json({
+                loggedIn: true,
+                user: req.session.user
+            });
+        } else {
+            res.json({ loggedIn: false });
+        }
+    });
+
+    // app.get('/current_user', (req, res) => {
+    //     if (req.session.isLoggedIn) {
+    //         res.json({
+    //         loggedIn: true,
+    //         user: req.session.user
+    //         });
+    //     } else {
+    //         res.json({ loggedIn: false });
+    //     }
+    // });
 
 }

@@ -1,0 +1,125 @@
+.container {  
+    display: grid;
+    grid-template-columns: 0.1fr 0.45fr 3fr 0.1fr;
+    grid-template-rows: 0.05fr auto auto 1fr auto 0.05fr;
+    gap: 5px;
+    grid-auto-flow: row;
+    height: 100vh;
+    grid-template-areas:
+        ". . . ."
+        ". searcharea titlearea ."
+        ". searcharea titlearea ."
+        ". sidearea mainarea ."
+        ". toolarea profilearea ."
+        ". . . .";
+}
+
+@media (max-width: 1080px) {
+    .container {
+        grid-template-columns: 0.05fr 1fr 3fr 0.05fr;
+        grid-template-rows: 0.05fr auto auto 1fr auto auto 0.05fr;
+        height: 100vh;
+        grid-template-areas:
+            ". . . ."
+            ". searcharea titlearea ."
+            ". searcharea titlearea ."
+            ". sidearea mainarea ."
+            ". toolarea toolarea ."
+            ". profilearea profilearea ."
+            ". . . .";
+    }
+}
+
+.mainarea, .sidearea, .toolarea, .profilearea, .searcharea, .titlearea {
+    border: 2px solid black;
+    background-color: beige;
+    padding: 5px;
+    margin: 0;
+}
+
+.mainarea { 
+    grid-area: mainarea;
+    overflow-y: auto;
+}
+
+.sidearea { 
+    grid-area: sidearea;
+    overflow-y: auto;
+}
+
+.toolarea { 
+    grid-area: toolarea;
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Position the <a> tags in a circle with dynamic scaling */
+.toolarea > a {
+    position: absolute;
+    width: 35%; /* Dynamic percentage */
+    aspect-ratio: 1 / 1;
+    --angle: calc(360deg / var(--total) * var(--index));
+    --radius: 75%; /* Dynamic percentage */
+    transform: 
+        rotate(var(--angle)) 
+        translate(var(--radius)) 
+        rotate(calc(-1 * var(--angle)));
+}
+
+.toolarea > a:nth-child(1) { --index: 0; }
+.toolarea > a:nth-child(2) { --index: 1; }
+.toolarea > a:nth-child(3) { --index: 2; }
+.toolarea > a:nth-child(4) { --index: 3; }
+.toolarea > a:nth-child(5) { --index: 4; }
+.toolarea > a:nth-child(6) { --index: 5; }
+
+/* Style the toolicons to fill their parent <a> */
+.toolicon {
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: block;
+}
+
+.filetool {
+    background-image: url('/images/file.png');
+}
+
+.testtool {
+    background-image: url('/images/test.png');
+}
+
+.permtool {
+    background-image: url('/images/perm.png');
+}
+
+@media (max-width: 1080px) {
+    .toolarea {
+        aspect-ratio: auto;
+        height: auto;
+        padding: 10px 5px;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .toolarea > a {
+        position: static;
+        transform: none;
+        width: 50px;
+        height: 50px;
+    }
+}
+
+.profilearea { 
+    grid-area: profilearea;
+    overflow-y: auto;
+}
+
+.searcharea { grid-area: searcharea; }
+
+.titlearea { grid-area: titlearea; }
