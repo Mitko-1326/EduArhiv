@@ -7,7 +7,7 @@ const cors = require("cors");
 const app = express();
 const port = 3000;
 const API_KEY = process.env.API_KEY;
-const API_URL = process.env.API_URL || 'http://api.eduarhiv.com';
+const API_URL = process.env.API_URL || 'https://api.eduarhiv.com';
 
 app.use(
   cors({
@@ -19,12 +19,9 @@ app.use(
   })
 );
 
-
-// STEP 1: Set up body parsing FIRST
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// STEP 2: Set up session
 app.use(session({
   secret: 'your-secret-key-change-this', 
   resave: false,  
@@ -36,7 +33,6 @@ app.use(session({
   }
 }));
 
-// STEP 3: Password protection (optional)
 if (process.env.BASIC_AUTH_PASSWORD) {
   app.use(basicAuth({
     users: { 'demo': process.env.BASIC_AUTH_PASSWORD },
@@ -45,11 +41,10 @@ if (process.env.BASIC_AUTH_PASSWORD) {
   }));
 }
 
-// STEP 4: Static files
 app.use(express.static('public'));
 
-// STEP 5: NOW set up routes (including auth)
 require('./auth')(app, API_KEY);
+require('./files')(app, API_KEY);
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
@@ -64,6 +59,19 @@ app.get("/dashboard", (req, res) => {
     res.sendFile(__dirname + "/public/dashboard/dashboard.html");
   }
 });
+
+app.get("/file_view", (req, res) => {
+  if (req.session.isLoggedIn) {
+    res.sendFile(__dirname + "/public/file_view/file_view.html");
+  }
+});
+
+app.get("/test_view", (req, res) => {
+  if (req.session.isLoggedIn) {
+    res.sendFile(__dirname + "/public/file_view/test_view.html");
+  }
+});
+
 
 // STEP 6: Start server
 app.listen(port, "0.0.0.0", () => {

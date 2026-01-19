@@ -19,11 +19,10 @@ module.exports = function(app, API_KEY) {
         // If login successful, save to session
         if (result.success) {
             req.session.user = result.user;
-            console.log(result);  // Store user info in session!
+            req.session.path = '/';  
             req.session.isLoggedIn = true;
-            console.log('User logged in:', req.session.user);
             
-            res.redirect('/dashboard');  // Send them to main page
+            res.redirect('/dashboard');
         } else {
             res.redirect('/login?error=invalid');  // Send back to login with error
         }
@@ -33,22 +32,47 @@ module.exports = function(app, API_KEY) {
         if (req.session.isLoggedIn) {
             res.json({
                 loggedIn: true,
-                user: req.session.user
+                user: req.session.user,
+                path: req.session.path
             });
         } else {
             res.json({ loggedIn: false });
         }
     });
 
-    // app.get('/current_user', (req, res) => {
-    //     if (req.session.isLoggedIn) {
-    //         res.json({
-    //         loggedIn: true,
-    //         user: req.session.user
-    //         });
-    //     } else {
-    //         res.json({ loggedIn: false });
-    //     }
-    // });
+    app.post('/update_path', (req, res) => {
+        if (!req.session.isLoggedIn) {
+            return res.status(401).json({ error: 'Not logged in' });
+        }
+        
+        const { path } = req.body;
+        req.session.path = path || '';
+        res.json({ success: true, path: req.session.path });
+    });
 
+    app.get('/download', async (req, res) => {
+    if (!req.session.isLoggedIn) {
+        return res.redirect('/login');
+    }
+    
+    try {
+        const filePath = req.query.path;
+        const url = `https://api.eduarhiv.com/fs/download?path=${encodeURIComponent(filePath)}`;
+        
+        const apiResponse = await fetch(url, {
+            headers: { 'X-API-Key': API_KEY }
+        });
+        
+        if (!apiResponse.ok) {
+            return res.status(404).send('File not found');
+        }
+        
+        // Pipe the file through
+        const buffer = await apiResponse.arrayBuffer();
+        res.send(Buffer.from(buffer));
+    } catch (error) {
+        console.error('Download error:', error);
+        res.status(500).send('Download failed');
+    }
+});
 }

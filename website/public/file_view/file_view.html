@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eduarhiv Dashboard</title>
+    <script src="/utils.js"></script>
+    <script type="module" src="/file_view/file_view.js"></script>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/dashboard/dashboard.css">
+    <link rel="stylesheet" href="/file_view/file_view.css">
+</head>
+<body>
+    <div class="container">
+        <div class="mainarea"></div>
+        <div class="sidearea"></div>
+        <div class="toolarea" style="--total: 3;">
+            <a href="/file_view"><div class="toolicon filetool"></div></a>
+            <a href="/test_view"><div class="toolicon testtool"></div></a>
+            <a href="/perm_view"><div class="toolicon permtool"></div></a>
+        </div>
+        <div class="profilearea">
+            <h3 id="username">user user</h2>
+            <p id="userrole">role</p>
+        </div>
+        <div class="searcharea"></div>
+        <div class="titlearea">
+            <p id="pathdisplay">EDUARHIV/</p>
+        </div>
+    </div>
+</body>
+</html>
