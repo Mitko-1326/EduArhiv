@@ -1,0 +1,29 @@
+.toolarea {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.toolarea > a {
+    width: 45%;
+    height: 45%;
+}
+
+@media (max-width: 1080px) {
+    .toolarea {
+        aspect-ratio: auto;
+        height: auto;
+        padding: 10px 5px;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .toolarea > a {
+        position: static;
+        transform: none;
+        width: 50px;
+        height: 50px;
+    }
+}

@@ -1,0 +1,43 @@
+.toolarea { 
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+/* Position the <a> tags in a circle with dynamic scaling */
+.toolarea > a {
+    position: absolute;
+    width: 35%; /* Dynamic percentage */
+    aspect-ratio: 1 / 1;
+    --angle: calc(360deg / var(--total) * var(--index));
+    --radius: 75%; /* Dynamic percentage */
+    transform: 
+        rotate(var(--angle)) 
+        translate(var(--radius)) 
+        rotate(calc(-1 * var(--angle)));
+}
+
+.toolarea > a:nth-child(1) { --index: 0; }
+.toolarea > a:nth-child(2) { --index: 1; }
+.toolarea > a:nth-child(3) { --index: 2; }
+.toolarea > a:nth-child(4) { --index: 3; }
+.toolarea > a:nth-child(5) { --index: 4; }
+.toolarea > a:nth-child(6) { --index: 5; }
+
+@media (max-width: 1080px) {
+    .toolarea {
+        aspect-ratio: auto;
+        height: auto;
+        padding: 10px 5px;
+        display: flex;
+        flex-direction: row;
+        gap: 10px;
+    }
+    
+    .toolarea > a {
+        position: static;
+        transform: none;
+        width: 50px;
+        height: 50px;
+    }
+}
