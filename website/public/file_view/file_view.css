@@ -26,4 +26,50 @@
         width: 50px;
         height: 50px;
     }
+}   
+
+.backicon {
+    background-image: url('/images/backarrow.png');
+}
+
+.uploadfile {
+    background-image: url('/images/uploadfile.png');
+}
+
+.makefolder {
+    background-image: url('/images/createfolder.png');
+}
+
+.deletefile {
+    background-image: url('/images/trash.png');
+}
+
+.toolback {
+    grid-area: toolarea;
+    z-index: 10;
+    padding: 10px; 
+}
+
+.mainfuncs > div {
+    display: flex;;
+    width:2%;
+    height:5%;
+    cursor:grab;
+}
+
+.toolback > a {
+    display: flex;
+    width:25%;
+    height:25%;
+}
+
+.mainfuncs {
+    grid-area: mainarea;
+    z-index: 10;
+    padding: 10px; 
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    justify-content: flex-end; /* Aligns items to the right */
+    align-items: flex-end;     /* Aligns items to the bottom */
 }
