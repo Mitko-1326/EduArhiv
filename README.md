@@ -62,3 +62,4 @@ Backend & Frontend
 •	Мобилна поддръжка
 
 
+MVP link: https://github.com/Mitko-1326/EduArhiv/blob/08b42d05412b6f1fb8efacf4780cc8c73bc7d169/MVP.md
