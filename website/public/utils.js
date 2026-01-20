@@ -1,4 +1,4 @@
-async function getCurrentUser() {
+export async function getCurrentUser() {
   try {
     const response = await fetch('/current_user');
     const data = await response.json();

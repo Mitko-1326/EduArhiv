@@ -1,7 +1,7 @@
 const express = require("express");
 require("dotenv").config();
-const basicAuth = require('express-basic-auth');  // ← Move to top
-const session = require('express-session');  // ← Move to top
+const basicAuth = require('express-basic-auth');
+const session = require('express-session');
 const cors = require("cors");
 
 const app = express();
@@ -9,18 +9,25 @@ const port = 3000;
 const API_KEY = process.env.API_KEY;
 const API_URL = process.env.API_URL || 'https://api.eduarhiv.com';
 
-app.use(
-  cors({
-    origin:
-      process.env.NODE_ENV === "production"
-        ? ["https://eduarhiv.com", "https://www.eduarhiv.com"]
-        : true,
-    credentials: true,
-  })
-);
+app.use(cors({
+  origin: process.env.NODE_ENV === "production"
+    ? ["https://eduarhiv.com", "https://www.eduarhiv.com"]
+    : true,
+  credentials: true,
+}));
+
+// Smart body parsing - REPLACE the old app.use(express.json()) lines with this:
+// Better approach - handle upload separately, use normal parsing for everything else
+app.use((req, res, next) => {
+  if (req.path === '/upload') {
+    return express.raw({ type: "*/*", limit: "50mb" })(req, res, next);
+  }
+  next();
+});
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
 
 app.use(session({
   secret: 'your-secret-key-change-this', 
@@ -32,6 +39,8 @@ app.use(session({
     secure: false  
   }
 }));
+
+// ... rest of your code stays the same
 
 if (process.env.BASIC_AUTH_PASSWORD) {
   app.use(basicAuth({

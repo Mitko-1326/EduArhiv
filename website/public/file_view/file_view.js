@@ -1,5 +1,119 @@
 // file_view.js
 import { displayFilesAndFolders } from './htmlgen.js';
+import { getCurrentUser } from '../utils.js';
+
+
+// 2. Setup Buttons when DOM loads
+window.addEventListener('DOMContentLoaded', async () => {
+    const user = await getCurrentUser();
+    if (!user) {
+        window.location.href = '/login';
+        return;
+    }
+
+    // Load initial files
+    loadFiles();
+
+    // --- Button Event Listeners ---
+
+    // A. Upload Button
+    const uploadBtn = document.querySelector('.uploadfile');
+    // In file_view.js upload handler
+
+    uploadBtn.addEventListener('click', () => {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.onchange = async (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            const arrayBuffer = await file.arrayBuffer();
+            
+            // Fix path construction - handle both empty and non-empty paths
+            let fullPath;
+            if (!user.path || user.path === '' || user.path === '/') {
+                fullPath = file.name;  // Root: just the filename
+            } else {
+                fullPath = `${user.path}/${file.name}`;  // Subfolder: path/filename
+            }
+            
+            console.log('Uploading to:', fullPath);
+            
+            const res = await fetch(`/upload?path=${encodeURIComponent(fullPath)}`, {
+                method: 'POST',
+                body: arrayBuffer,
+                headers: { 'Content-Type': 'application/octet-stream' }
+            });
+
+            if (res.ok) {
+                loadFiles();
+            } else {
+                const err = await res.json();
+                alert(err.error || 'Upload failed');
+            }
+        };
+        input.click();
+    });
+
+    // B. Create Folder Button
+    const folderBtn = document.querySelector('.makefolder');
+    folderBtn.addEventListener('click', async () => {
+        const name = prompt("Enter folder name:");
+        if (!name) return;
+
+        const res = await fetch('/mkdir', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({path: user.path, name: name })
+        });
+
+        if (res.ok) {
+            loadFiles();
+        } else {
+            const err = await res.json();
+            alert(err.error || 'Failed to create folder');
+        }
+    });
+
+    // C. Delete Button
+    const deleteBtn = document.querySelector('.deletefile');
+    deleteBtn.addEventListener('click', async () => {
+        const selected = document.querySelector('.file-card.selected');
+        if (!selected) {
+            alert("Please select a file or folder first by clicking it!");
+            return;
+        }
+
+        const pathToDelete = selected.dataset.path;
+        if (!confirm(`Are you sure you want to delete ${pathToDelete}?`)) return;
+
+        const res = await fetch(`/delete?path=${encodeURIComponent(pathToDelete)}`, {
+            method: 'DELETE'
+        });
+
+        if (res.ok) {
+            loadFiles();
+        } else {
+            alert('Delete failed');
+        }
+    });
+    
+    // D. Selection Logic (Event Delegation)
+    const mainArea = document.querySelector('.mainarea');
+    mainArea.addEventListener('click', (e) => {
+        const card = e.target.closest('.file-card');
+        if (!card) return;
+
+        // Toggle selection
+        const wasSelected = card.classList.contains('selected');
+        // Deselect all others
+        document.querySelectorAll('.file-card.selected').forEach(c => c.classList.remove('selected'));
+        
+        if (!wasSelected) {
+            card.classList.add('selected');
+        }
+    });
+});
 
 // Load files for current path
 async function loadFiles() {

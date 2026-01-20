@@ -1,33 +1,137 @@
+/* ========== MAIN AREA & FILE GRID ========== */
+.mainarea {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 15px;
+    padding: 20px;
+    padding-top: 70px; /* Space for the function buttons */
+    overflow-y: auto;
+}
+
+/* Individual file/folder cards */
+.file-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 10px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+    word-break: break-word;
+    height: 20%;
+}
+
+.file-card:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+}
+
+.file-card.selected {
+    border: 2px solid #007bff;
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+/* File/folder icons */
+.file-card > img {
+    width: 64px;
+    height: 64px;
+    aspect-ratio: 1 / 1;
+    object-fit: contain;
+    margin-bottom: 8px;
+}
+
+/* File/folder names */
+.file-card > p {
+    margin: 0;
+    font-size: 12px;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+}
+
+/* ========== FUNCTION BUTTONS (Upload, Delete, etc) ========== */
+/* This overlays on mainarea using grid-area */
+.mainfuncs {
+    grid-area: mainarea; /* Overlays on mainarea */
+    z-index: 10;
+    padding: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
+    justify-content: flex-start;
+    pointer-events: none; /* Container doesn't block clicks */
+}
+
+.mainfuncs > div {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    min-height: 48px;
+    flex-shrink: 0; /* Prevent squishing */
+    cursor: pointer;
+    pointer-events: auto; /* Buttons ARE clickable */
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    transition: background-color 0.2s;
+}
+
+.mainfuncs > div:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* ========== BACK BUTTON ========== */
+/* This overlays on toolarea using grid-area */
+.toolback {
+    grid-area: toolarea; /* Overlays on toolarea */
+    z-index: 10;
+    padding: 10px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    pointer-events: none;
+}
+
+.toolback > a {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    pointer-events: auto;
+}
+
+/* ========== TOOL AREA (Bottom icons) ========== */
 .toolarea {
     display: flex;
     align-items: center;
     justify-content: center;
-
+    gap: 10px;
 }
 
 .toolarea > a {
     width: 45%;
     height: 45%;
+    aspect-ratio: 1 / 1;
+    display: flex;
 }
 
-@media (max-width: 1080px) {
-    .toolarea {
-        aspect-ratio: auto;
-        height: auto;
-        padding: 10px 5px;
-        display: flex;
-        flex-direction: row;
-        gap: 10px;
-    }
-    
-    .toolarea > a {
-        position: static;
-        transform: none;
-        width: 50px;
-        height: 50px;
-    }
-}   
+/* Tool icons - make them square */
+.toolicon {
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 1 / 1;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    display: block;
+}
 
+/* Icon images */
 .backicon {
     background-image: url('/images/backarrow.png');
 }
@@ -44,32 +148,54 @@
     background-image: url('/images/trash.png');
 }
 
-.toolback {
-    grid-area: toolarea;
-    z-index: 10;
-    padding: 10px; 
-}
-
-.mainfuncs > div {
-    display: flex;;
-    width:2%;
-    height:5%;
-    cursor:grab;
-}
-
-.toolback > a {
-    display: flex;
-    width:25%;
-    height:25%;
-}
-
-.mainfuncs {
-    grid-area: mainarea;
-    z-index: 10;
-    padding: 10px; 
-    display: flex;
-    flex-direction: row;
-    gap: 50px;
-    justify-content: flex-end; /* Aligns items to the right */
-    align-items: flex-end;     /* Aligns items to the bottom */
+/* ========== MOBILE RESPONSIVE ========== */
+@media (max-width: 1080px) {
+    .mainarea {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+        gap: 10px;
+        padding: 10px;
+        padding-top: 60px;
+    }
+    
+    .file-card > img {
+        width: 48px;
+        height: 48px;
+    }
+    
+    .file-card > p {
+        font-size: 11px;
+    }
+    
+    .mainfuncs {
+        gap: 5px;
+        padding: 5px;
+    }
+    
+    .mainfuncs > div {
+        width: 40px;
+        height: 40px;
+        min-width: 40px;
+        min-height: 40px;
+    }
+    
+    .toolarea {
+        flex-direction: row;
+        aspect-ratio: auto;
+        height: auto;
+        padding: 10px 5px;
+    }
+    
+    .toolarea > a {
+        width: 50px;
+        height: 50px;
+    }
+    
+    .toolback {
+        padding: 5px;
+    }
+    
+    .toolback > a {
+        width: 40px;
+        height: 40px;
+    }
 }

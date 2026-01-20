@@ -19,7 +19,7 @@ module.exports = function(app, API_KEY) {
         // If login successful, save to session
         if (result.success) {
             req.session.user = result.user;
-            req.session.path = '/';  
+            req.session.path = '';  
             req.session.isLoggedIn = true;
             
             res.redirect('/dashboard');
