@@ -8,8 +8,7 @@ function FileCard(file) {
     <img src="/images/file.png" alt="File Icon" class="file-icon">
     <p>${file.name}</p>
   `;
-  
-  // Keep double click for download
+    
   card.addEventListener('dblclick', () => {
     window.open(`/download?path=${encodeURIComponent(file.path)}`);
   });

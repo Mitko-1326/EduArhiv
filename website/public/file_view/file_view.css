@@ -47,11 +47,12 @@
     margin: 0;
     font-size: 12px;
     width: 100%;
-    overflow: hidden;
+    overflow: visible;
     text-overflow: ellipsis;
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+
 }
 
 /* ========== FUNCTION BUTTONS (Upload, Delete, etc) ========== */

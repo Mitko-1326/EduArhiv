@@ -15,6 +15,33 @@ window.addEventListener('DOMContentLoaded', async () => {
     loadFiles();
 
     // --- Button Event Listeners ---
+    const backBtn = document.querySelector('.abcdef');
+    backBtn.addEventListener('click', async (e) => {
+        // FIX: Fetch the user again right here to get the CURRENT path
+        const user = await getCurrentUser(); 
+
+        console.log(`Current path: ${user.path}`);
+
+        // Safety check: If we are already at root (empty string), do nothing
+        if (!user.path || user.path === '') {
+            console.log("Already at root, cannot go back further.");
+            return;
+        }
+
+        // 1. Split path into array
+        const segments = user.path.split('/');
+
+        // 2. Remove the last segment
+        segments.pop();
+
+        // 3. Join back into a string
+        const parentPath = segments.join('/');
+
+        console.log(`Going up to: ${parentPath}`);
+
+        await navigateTo(parentPath);
+    });
+
 
     // A. Upload Button
     const uploadBtn = document.querySelector('.uploadfile');
@@ -58,6 +85,8 @@ window.addEventListener('DOMContentLoaded', async () => {
     // B. Create Folder Button
     const folderBtn = document.querySelector('.makefolder');
     folderBtn.addEventListener('click', async () => {
+        const user = await getCurrentUser(); 
+
         const name = prompt("Enter folder name:");
         if (!name) return;
 
