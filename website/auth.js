@@ -60,13 +60,17 @@ module.exports = function(app, API_KEY) {
         const url = `https://api.eduarhiv.com/fs/download?path=${encodeURIComponent(filePath)}`;
         
         const apiResponse = await fetch(url, {
-            headers: { 'X-API-Key': API_KEY }
+            headers: { 
+                'X-API-Key': API_KEY ,
+                'Content-Disposition': 'attachment; filename="' + encodeURIComponent(filePath.split('/').pop()) + '"'
+            },
         });
         
         if (!apiResponse.ok) {
             return res.status(404).send('File not found');
         }
-        
+        res.setHeader('Content-Disposition', 'attachment; filename="' + encodeURIComponent(filePath.split('/').pop()) + '"');
+
         // Pipe the file through
         const buffer = await apiResponse.arrayBuffer();
         res.send(Buffer.from(buffer));

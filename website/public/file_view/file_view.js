@@ -47,7 +47,11 @@ window.addEventListener('DOMContentLoaded', async () => {
     const uploadBtn = document.querySelector('.uploadfile');
     // In file_view.js upload handler
 
-    uploadBtn.addEventListener('click', () => {
+    uploadBtn.addEventListener('click', async () => {
+        const user = await getCurrentUser(); 
+        console.log("Current user path for upload:", user.path);
+        
+
         const input = document.createElement('input');
         input.type = 'file';
         input.onchange = async (e) => {
