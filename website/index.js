@@ -22,6 +22,9 @@ app.use((req, res, next) => {
   if (req.path === '/upload') {
     return express.raw({ type: "*/*", limit: "50mb" })(req, res, next);
   }
+  if (req.path === '/replace') {
+    return express.raw({ type: "*/*", limit: "50mb" })(req, res, next);
+  }
   next();
 });
 

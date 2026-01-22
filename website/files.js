@@ -84,6 +84,33 @@ module.exports = function(app, API_KEY) {
         }
     });
 
+    app.put('/replace', async (req, res) => {
+        if (!req.session.isLoggedIn) return res.status(401).send('Unauthorized');
+
+        try {
+            const { path } = req.query; // Get path from query string
+            
+            const url = `https://api.eduarhiv.com/fs/replace?path=${encodeURIComponent(path)}`;
+            
+            const apiResponse = await fetch(url, {
+                method: 'PUT',
+                headers: { 
+                    'X-API-Key': API_KEY,
+                    'Content-Type': 'application/octet-stream' 
+                },
+                body: req.body // Forward the raw buffer
+            });
+            
+            const data = await apiResponse.json();
+            if (!apiResponse.ok) return res.status(apiResponse.status).json(data);
+            
+            res.json(data);
+        } catch (error) {
+            console.error('Upload proxy error:', error);
+            res.status(500).json({ error: 'Upload failed' });
+        }
+    });
+
     // 2. Create Folder Endpoint
     app.post('/mkdir', async (req, res) => {
         if (!req.session.isLoggedIn) return res.status(401).send('Unauthorized');

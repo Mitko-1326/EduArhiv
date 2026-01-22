@@ -78,9 +78,25 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             if (res.ok) {
                 loadFiles();
-            } else {
-                const err = await res.json();
-                alert(err.error || 'Upload failed');
+                return;
+            }
+
+            const err = await res.json();
+            console.log('Already exists,, trying repalce');
+            if (err.error.includes("replace")) {
+                const res2 = await fetch(`/replace?path=${encodeURIComponent(fullPath)}`, {
+                    method: 'PUT',
+                    body: arrayBuffer,
+                    headers: { 'Content-Type': 'application/octet-stream' }
+                });
+
+                if (res2.ok) {
+                    loadFiles();
+                    return;
+                } else {
+                    const err2 = await res2.json();
+                    alert(`fail: ${err2.error}`)
+                }
             }
         };
         input.click();
