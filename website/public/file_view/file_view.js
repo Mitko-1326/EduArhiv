@@ -83,6 +83,11 @@ window.addEventListener('DOMContentLoaded', async () => {
 
             const err = await res.json();
             console.log('Already exists,, trying repalce');
+
+            if (!confirm("This file already exists, uploading again will replace it\nAre you sure?")) {
+                return;
+            }
+
             if (err.error.includes("replace")) {
                 const res2 = await fetch(`/replace?path=${encodeURIComponent(fullPath)}`, {
                     method: 'PUT',
