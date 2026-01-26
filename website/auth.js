@@ -4,7 +4,6 @@ module.exports = function(app, API_KEY) {
     app.post('/handle_login', async (req, res) => {
         // get form data
         const { username, password } = req.body;
-        
             const apiResponse = await fetch('https://api.eduarhiv.com/auth/login', {
             method: 'POST',
             headers: {
@@ -15,15 +14,17 @@ module.exports = function(app, API_KEY) {
         });
         
         const result = await apiResponse.json();
-        
+
         // If login successful, save to session
         if (result.success) {
+            console.log("success!!!")
             req.session.user = result.user;
             req.session.path = '';  
             req.session.isLoggedIn = true;
-            
+
             res.redirect('/dashboard');
         } else {
+            console.log("whoopsie")
             res.redirect('/login?error=invalid');  // Send back to login with error
         }
     });
