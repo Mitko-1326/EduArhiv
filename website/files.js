@@ -54,7 +54,6 @@ module.exports = function(app, API_KEY) {
     });
     // 1. Upload Endpoint
     app.post('/upload', async (req, res) => {
-        if (!req.session.isLoggedIn) return res.status(401).send('Unauthorized');
 
         try {
             const { path } = req.query; // Get path from query string
@@ -85,7 +84,6 @@ module.exports = function(app, API_KEY) {
     });
 
     app.put('/replace', async (req, res) => {
-        if (!req.session.isLoggedIn) return res.status(401).send('Unauthorized');
 
         try {
             const { path } = req.query; // Get path from query string
@@ -113,7 +111,6 @@ module.exports = function(app, API_KEY) {
 
     // 2. Create Folder Endpoint
     app.post('/mkdir', async (req, res) => {
-        if (!req.session.isLoggedIn) return res.status(401).send('Unauthorized');
         
         try {
             // We expect body: { path: "/current/path", name: "NewFolder" }
@@ -146,7 +143,7 @@ module.exports = function(app, API_KEY) {
 
     // 3. Delete Endpoint
     app.delete('/delete', async (req, res) => {
-        if (!req.session.isLoggedIn) return res.status(401).send('Unauthorized');
+        
         
         try {
             const filePath = req.query.path;
@@ -166,4 +163,9 @@ module.exports = function(app, API_KEY) {
             res.status(500).json({ error: 'Delete failed' });
         }
     });
+
+    // version endpoint [wip]
+    app.get('/versions', async(req, res) => {
+        
+    })
 }
