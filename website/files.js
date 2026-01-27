@@ -166,6 +166,24 @@ module.exports = function(app, API_KEY) {
 
     // version endpoint [wip]
     app.get('/versions', async(req, res) => {
-        
+        try {
+            const filePath = req.query.path;
+            const url = `https://api.eduarhiv.com/fs/versions?path=${encodeURIComponent(filePath)}`;
+            
+            const apiResponse = await fetch(url, {
+                method: 'GET',
+                headers: { 'X-API-Key': API_KEY }
+            });
+            
+            const data = await apiResponse.json();
+            if (!apiResponse.ok) return res.status(apiResponse.status).json(data);
+            
+            console.log(data);
+
+            res.json(data);
+        } catch (error) {
+            console.error('Versions proxy error:', error);
+            res.status(500).json({ error: 'Getting versions failed' });
+        }
     })
 }
