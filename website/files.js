@@ -58,10 +58,6 @@ module.exports = function(app, API_KEY) {
         try {
             const { path } = req.query; // Get path from query string
             
-            // We need to pipe the raw body from client to API
-            // Note: express.json() in index.js might interfere if we aren't careful.
-            // We assume the client sends binary/octet-stream
-            
             const url = `https://api.eduarhiv.com/fs/upload?path=${encodeURIComponent(path)}`;
             
             const apiResponse = await fetch(url, {

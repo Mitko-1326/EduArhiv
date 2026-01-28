@@ -2,11 +2,12 @@
 import { displayFilesAndFolders } from './htmlgen.js';
 import { getCurrentUser } from '../utils.js';
 
-
 // 2. Setup Buttons when DOM loads
 window.addEventListener('DOMContentLoaded', async () => {
+    console.log("[CLIENT] DOM Content Loaded. Initializing...");
     const user = await getCurrentUser();
     if (!user) {
+        console.log("[CLIENT] No user found, redirecting to login");
         window.location.href = '/login';
         return;
     }
@@ -17,40 +18,27 @@ window.addEventListener('DOMContentLoaded', async () => {
     // --- Button Event Listeners ---
     const backBtn = document.querySelector('.abcdef');
     backBtn.addEventListener('click', async (e) => {
-        // FIX: Fetch the user again right here to get the CURRENT path
         const user = await getCurrentUser(); 
+        console.log(`[CLIENT] Back button clicked. Current path: ${user.path}`);
 
-        console.log(`Current path: ${user.path}`);
-
-        // Safety check: If we are already at root (empty string), do nothing
         if (!user.path || user.path === '') {
-            console.log("Already at root, cannot go back further.");
+            console.log("[CLIENT] Already at root, cannot go back further.");
             return;
         }
 
-        // 1. Split path into array
         const segments = user.path.split('/');
-
-        // 2. Remove the last segment
         segments.pop();
-
-        // 3. Join back into a string
         const parentPath = segments.join('/');
-
-        console.log(`Going up to: ${parentPath}`);
-
+        
+        console.log(`[CLIENT] Navigating up to: ${parentPath}`);
         await navigateTo(parentPath);
     });
 
-
     // A. Upload Button
     const uploadBtn = document.querySelector('.uploadfile');
-    // In file_view.js upload handler
-
     uploadBtn.addEventListener('click', async () => {
         const user = await getCurrentUser(); 
-        console.log("Current user path for upload:", user.path);
-        
+        console.log("[CLIENT] Upload button clicked. Path:", user.path);
 
         const input = document.createElement('input');
         input.type = 'file';
@@ -60,15 +48,14 @@ window.addEventListener('DOMContentLoaded', async () => {
             
             const arrayBuffer = await file.arrayBuffer();
             
-            // Fix path construction - handle both empty and non-empty paths
             let fullPath;
             if (!user.path || user.path === '' || user.path === '/') {
-                fullPath = file.name;  // Root: just the filename
+                fullPath = file.name;
             } else {
-                fullPath = `${user.path}/${file.name}`;  // Subfolder: path/filename
+                fullPath = `${user.path}/${file.name}`;
             }
             
-            console.log('Uploading to:', fullPath);
+            console.log(`[CLIENT] Uploading file: ${file.name} to ${fullPath}`);
             
             const res = await fetch(`/upload?path=${encodeURIComponent(fullPath)}`, {
                 method: 'POST',
@@ -76,19 +63,21 @@ window.addEventListener('DOMContentLoaded', async () => {
                 headers: { 'Content-Type': 'application/octet-stream' }
             });
 
+            console.log(`[CLIENT] Upload response status: ${res.status}`);
+
             if (res.ok) {
                 loadFiles();
                 return;
             }
 
             const err = await res.json();
-            console.log('Already exists,, trying repalce');
+            console.log('[CLIENT] Upload conflict (409), attempting replace:', err);
 
             if (!confirm("This file already exists, uploading again will replace it\nAre you sure?")) {
                 return;
             }
 
-            if (err.error.includes("replace")) {
+            if (err.error && err.error.includes("replace")) { // Check if error message contains "replace"
                 const res2 = await fetch(`/replace?path=${encodeURIComponent(fullPath)}`, {
                     method: 'PUT',
                     body: arrayBuffer,
@@ -100,8 +89,10 @@ window.addEventListener('DOMContentLoaded', async () => {
                     return;
                 } else {
                     const err2 = await res2.json();
-                    alert(`fail: ${err2.error}`)
+                    alert(`Replace failed: ${err2.error}`);
                 }
+            } else {
+                 alert(`Upload failed: ${err.error}`);
             }
         };
         input.click();
@@ -115,6 +106,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const name = prompt("Enter folder name:");
         if (!name) return;
 
+        console.log(`[CLIENT] Creating folder: ${name} in ${user.path}`);
         const res = await fetch('/mkdir', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -141,6 +133,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const pathToDelete = selected.dataset.path;
         if (!confirm(`Are you sure you want to delete ${pathToDelete}?`)) return;
 
+        console.log(`[CLIENT] Deleting: ${pathToDelete}`);
         const res = await fetch(`/delete?path=${encodeURIComponent(pathToDelete)}`, {
             method: 'DELETE'
         });
@@ -158,9 +151,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         const card = e.target.closest('.file-card');
         if (!card) return;
 
-        // Toggle selection
         const wasSelected = card.classList.contains('selected');
-        // Deselect all others
         document.querySelectorAll('.file-card.selected').forEach(c => c.classList.remove('selected'));
         
         if (!wasSelected) {
@@ -177,24 +168,25 @@ async function loadFiles() {
         return;
     }
     
-    console.log('Loading files for path:', user.path);
+    console.log(`[CLIENT] Loading files for path: "${user.path}"`);
     
-    // Fetch file listing
-    const response = await fetch(`/file_listing?path=${encodeURIComponent(user.path)}`);
+    // Added cache: 'no-store' to prevent browser from caching the 401 error
+    const response = await fetch(`/file_listing?path=${encodeURIComponent(user.path)}`, {
+        cache: 'no-store'
+    });
+    
+    console.log(`[CLIENT] /file_listing status: ${response.status}`);
     const data = await response.json();
     
-    console.log('File listing response:', data);  // <-- See what we got
+    console.log('[CLIENT] File listing response:', data);
     
-    // Check if we have items
     if (!data.items) {
-        console.error('No items in response!');
+        console.error('[CLIENT] No items in response!');
         return;
     }
     
-    // Display files
     displayFilesAndFolders(data.items);
     
-    // Update UI
     document.getElementById('username').innerText = user.username;
     document.getElementById('userrole').innerText = user.role;
     document.getElementById('pathdisplay').innerText = `EDUARHIV/${user.path}`;
@@ -202,19 +194,14 @@ async function loadFiles() {
 
 // Navigate to a new path
 async function navigateTo(newPath) {
-    // Update path in session
+    console.log(`[CLIENT] Updating session path to: ${newPath}`);
     await fetch('/update_path', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path: newPath })
     });
-    
-    // Reload files
     await loadFiles();
 }
 
 // Make navigateTo available globally for htmlgen.js
 window.navigateTo = navigateTo;
-
-// Load on page ready
-window.addEventListener('DOMContentLoaded', loadFiles);
