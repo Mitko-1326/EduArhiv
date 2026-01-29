@@ -149,6 +149,10 @@
     background-image: url('/images/trash.png');
 }
 
+.auditbutton {
+    background-image: url('/images/auditbutton.png');
+}
+
 /* ========== MOBILE RESPONSIVE ========== */
 @media (max-width: 1080px) {
     .mainarea {

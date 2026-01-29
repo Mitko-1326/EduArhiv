@@ -12,6 +12,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         return;
     }
 
+
     // Load initial files
     loadFiles();
 
@@ -144,6 +145,30 @@ window.addEventListener('DOMContentLoaded', async () => {
             alert('Delete failed');
         }
     });
+
+    const auditButton = document.querySelector('.auditbutton');
+    auditButton.addEventListener('click', async() => {
+        
+        const selected = document.querySelector('.file-card.selected');
+        if (!selected) {
+            alert("Please select a file or folder first by clicking it!");
+            return;
+        }
+        
+        const pathToInspect = selected.dataset.path;
+        const res = await fetch(`/versions?path=${encodeURIComponent(pathToInspect)}`, {
+            method: 'GET'
+        });
+
+        const j = await res.json();
+
+        alert(JSON.stringify(j))
+
+        if (!res.ok) {
+            alert("failure")
+        } 
+
+    })
     
     // D. Selection Logic (Event Delegation)
     const mainArea = document.querySelector('.mainarea');
