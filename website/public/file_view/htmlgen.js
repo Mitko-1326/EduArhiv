@@ -34,7 +34,18 @@ function FolderCard(folder) {
   return card;
 }
 
+function AuditListItem(number, timestamp) {
+  const aitem = document.createElement('div')
+  aitem.className = 'audititem'
 
+  const time = timestamp
+
+  card.innerHTML = `
+    <p> ${number} </p>
+    <p> ${time} </p>
+  `
+
+}
 
 function displayFilesAndFolders(items) {
   const container = document.querySelector('.mainarea');

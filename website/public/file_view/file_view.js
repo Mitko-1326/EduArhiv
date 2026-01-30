@@ -161,7 +161,8 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
 
         const j = await res.json();
-
+        //const dia = document.querySelector('dialog');
+        //dia.showModal();
         alert(JSON.stringify(j))
 
         if (!res.ok) {
