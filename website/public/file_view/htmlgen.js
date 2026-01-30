@@ -1,3 +1,4 @@
+
 function FileCard(file) {
   const card = document.createElement('div');
   card.className = 'file-card';
@@ -38,12 +39,42 @@ function AuditListItem(number, timestamp) {
   const aitem = document.createElement('div')
   aitem.className = 'audititem'
 
-  const time = timestamp
-
+  const date = new Date(timestamp * 1000);
+  const time = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours}:${date.getMinutes}`
+  
   card.innerHTML = `
     <p> ${number} </p>
     <p> ${time} </p>
   `
+
+  aitem.addEventListener('click', () => {
+    aitem.forEach(c => c.classList.remove('selected'));
+    aitem.classList.add('selected')
+  })
+}
+
+function displayAuditOptions(items) {
+  const container = document.querySelector('dialog')
+  container.innerHTML = '';
+
+  if (!items || !Array.isArray(items)) {
+    console.error("not an array ", items);
+    return;
+  }
+
+  if (items.length === 0) {
+    console.error("no items in array");
+    return;
+  }
+
+  for (item in items) {
+    let number = item;
+    let timestamp = items[item].timestamp;
+
+    const auditItem = AuditListItem(number, timestamp)
+
+    container.appendChild(auditItem);
+  }
 
 }
 
@@ -73,4 +104,4 @@ function displayFilesAndFolders(items) {
   });
 }
 
-export { displayFilesAndFolders };
+export { displayFilesAndFolders, displayAuditOptions };

@@ -1,5 +1,5 @@
 // file_view.js
-import { displayFilesAndFolders } from './htmlgen.js';
+import { displayAuditOptions, displayFilesAndFolders } from './htmlgen.js';
 import { getCurrentUser } from '../utils.js';
 
 // 2. Setup Buttons when DOM loads
@@ -161,8 +161,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
 
         const j = await res.json();
-        //const dia = document.querySelector('dialog');
-        //dia.showModal();
+        displayAuditOptions(j)
         alert(JSON.stringify(j))
 
         if (!res.ok) {
