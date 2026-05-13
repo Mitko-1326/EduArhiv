@@ -5,7 +5,7 @@ EduArhiv е уеб платформа, която решава проблема 
 Този уебсайт е хостнат на: https://eduarhiv.com
 (Към момента сайта е хостнат на настолен компютър и не винаги е активен.)
 
-SERVER LINK: https://github.com/Nasko-5/EduArhiv-fileserver
+[SERVER LINK](https://github.com/Nasko-5/EduArhiv-fileserver) 
 
 # Цел на проекта
 
