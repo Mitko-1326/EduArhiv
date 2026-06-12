@@ -35,47 +35,63 @@ function FolderCard(folder) {
   return card;
 }
 
-function AuditListItem(number, timestamp) {
+function AuditListItem(number, timestamp, filePath) {
   const aitem = document.createElement('div')
   aitem.className = 'audititem'
 
-  const date = new Date(timestamp * 1000);
-  const time = `${date.getDay()}/${date.getMonth()}/${date.getFullYear()} ${date.getHours}:${date.getMinutes}`
-  
-  card.innerHTML = `
-    <p> ${number} </p>
-    <p> ${time} </p>
-  `
+  const date = new Date(timestamp);
+  const time = `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} ${date.getHours()}:${date.getMinutes()}`
+  aitem.innerHTML = `
+      <div class="audititem-content">
+      <p>Version ${number}</p>
+      <p>${time}</p>
+      <button class="rollback-btn">rollback</button>
+      </div>
+  `;
+
+  aitem.querySelector('.rollback-btn').addEventListener('click', async () => {
+      await fetch(`/rollback?path=${encodeURIComponent(filePath)}&version=${number}`, {
+          method: 'POST'
+      });
+      document.querySelector('dialog').close();
+  });
 
   aitem.addEventListener('click', () => {
-    aitem.forEach(c => c.classList.remove('selected'));
+    document.querySelectorAll('.audititem').forEach(c => c.classList.remove('selected'));
     aitem.classList.add('selected')
   })
+
+  return aitem;
 }
 
-function displayAuditOptions(items) {
-  const container = document.querySelector('dialog')
+function displayAuditOptions(items, selectedPath) {
+  const container = document.querySelector('dialog');
   container.innerHTML = '';
 
-  if (!items || !Array.isArray(items)) {
-    console.error("not an array ", items);
+  const closeBtn = document.createElement('button');
+  closeBtn.textContent = 'Close';
+  closeBtn.addEventListener('click', () => container.close());
+  container.appendChild(closeBtn);
+
+  if (!items || typeof items !== 'object') {
+    console.error("invalid items", items);
     return;
   }
 
-  if (items.length === 0) {
-    console.error("no items in array");
+  if (Object.keys(items).length === 0) {
+    console.error("no versions found");
     return;
   }
 
-  for (item in items) {
-    let number = item;
-    let timestamp = items[item].timestamp;
-
-    const auditItem = AuditListItem(number, timestamp)
-
+  for (const property in items) {
+    console.log(property, items[property].timestamp, items[property].date);
+    const auditItem = AuditListItem(property, items[property].timestamp, selectedPath);
     container.appendChild(auditItem);
   }
 
+
+
+  container.showModal();
 }
 
 function displayFilesAndFolders(items) {

@@ -33,35 +33,32 @@ module.exports = function(app, API_KEY) {
     });
 
     app.post('/handle_login', async (req, res) => {
-        // get form data
         const { username, password } = req.body;
         try {
             const apiResponse = await fetch('https://api.eduarhiv.com/auth/login', {
-            method: 'POST',
-            headers: {
-            'Content-Type': 'application/json',
-            'X-API-Key': API_KEY  
-            },
-            body: JSON.stringify({ username, password })
-        });
-        
-        const result = await apiResponse.json();
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': API_KEY  
+                },
+                body: JSON.stringify({ username, password })
+            });
+            
+            const result = await apiResponse.json();
+
+            if (result.success) {
+                console.log("success!!!")
+                req.session.user = result.user;
+                req.session.path = '';  
+                req.session.isLoggedIn = true;
+                res.redirect('/dashboard');
+            } else {
+                console.log("whoopsie")
+                res.redirect('/login?error=invalid');
+            }
         } catch (error) {
             console.error('Login error:', error);
             return res.status(500).json({ error: 'Login failed' });
-        }
-
-        // If login successful, save to session
-        if (result.success) {
-            console.log("success!!!")
-            req.session.user = result.user;
-            req.session.path = '';  
-            req.session.isLoggedIn = true;
-
-            res.redirect('/dashboard');
-        } else {
-            console.log("whoopsie")
-            res.redirect('/login?error=invalid');  // Send back to login with error
         }
     });
 

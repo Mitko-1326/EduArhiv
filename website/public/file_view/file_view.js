@@ -161,7 +161,7 @@ window.addEventListener('DOMContentLoaded', async () => {
         });
 
         const j = await res.json();
-        displayAuditOptions(j)
+        displayAuditOptions(j, selected.dataset.path)
         alert(JSON.stringify(j))
 
         if (!res.ok) {
