@@ -1,9 +1,41 @@
 module.exports = function(app, API_KEY) {
 
+    // user creation from the teacher's end will make a POST request to this endpoint, which will then call the API to create the user
+    app.post('/internal_register', async (req, res) => {
+        if (!req.session.isLoggedIn || req.session.user.role !== 'teacher') {
+            return res.status(403).json({ error: 'You do not have access to this feature!' });
+        }
+
+        const { username, password } = req.body;
+
+        try {
+            const apiResponse = await fetch('https://api.eduarhiv.com/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Key': API_KEY,
+                    'x-role': req.session.user.role 
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await apiResponse.json();
+        } catch (error) {
+            console.error('Registration error:', error);
+            return res.status(500).json({ error: 'Registration failed' });
+        }
+
+        if (result.success) {
+            res.json({ success: true });
+        } else {
+            res.status(400).json({ error: result.error });
+        }
+    });
 
     app.post('/handle_login', async (req, res) => {
         // get form data
         const { username, password } = req.body;
+        try {
             const apiResponse = await fetch('https://api.eduarhiv.com/auth/login', {
             method: 'POST',
             headers: {
@@ -14,6 +46,10 @@ module.exports = function(app, API_KEY) {
         });
         
         const result = await apiResponse.json();
+        } catch (error) {
+            console.error('Login error:', error);
+            return res.status(500).json({ error: 'Login failed' });
+        }
 
         // If login successful, save to session
         if (result.success) {
