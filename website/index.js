@@ -7,12 +7,12 @@ const app = express();
 const port = 3000;
 const API_KEY = process.env.API_KEY;
 const API_URL = process.env.API_URL || 'https://api.eduarhiv.com';
+const SESSION_SECRET = process.env.WEBSITE_SESSION_SECRET
 
-// 1. SERVE STATIC FILES (Images, CSS, JS)
+// 1. SERVE STATIC FILES
 app.use(express.static('public'));
 
 // 2. SMART BODY PARSING (Crucial for uploads)
-// This MUST come before app.use(express.json())
 const binary_endpoints = ["/upload", "/replace"];
 app.use((req, res, next) => {
   if (binary_endpoints.includes(req.path)) {
@@ -27,7 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // 4. SESSION CONFIG
 app.use(session({
-  secret: 'your-secret-key-change-this',
+  secret: SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
